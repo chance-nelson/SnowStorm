@@ -9,7 +9,6 @@ These instructions will get you a copy of the project up and running on your loc
 ### Prerequisites
 
 * [Icecast](https://icecast.org)
-* [shouty](https://github.com/edne/shouty)
 
 ### Installing
 
@@ -66,3 +65,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 * **Eduardo N** - shouty library - [edne](https://github.com/edne)
 * **Icecast Team** - Icecast
+* **Quod Libet Team** - mutagen - [quodlibet](https://github.com/quodlibet)

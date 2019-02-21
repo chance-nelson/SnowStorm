@@ -1,0 +1,9 @@
+[SERVER]
+host=localhost
+port=8000
+source_password=AGoodPassword
+mount=/stream
+admin_password=ABetterPassword
+
+[MUSIC]
+playlist=playlist.m3u

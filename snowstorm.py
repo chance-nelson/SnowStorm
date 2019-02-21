@@ -120,6 +120,9 @@ if __name__ == '__main__':
     with open(playlist, 'r') as fp:
         songs = fp.read().split('\n')
 
+    # Remove any empty strings
+    songs = list(filter(None, songs))
+
     while True:
         random.shuffle(songs)
 

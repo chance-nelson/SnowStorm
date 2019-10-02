@@ -23,6 +23,10 @@ Install dependencies
 ```
 pip install -r requirements.txt
 ```
+_optionally install using setup.py file_
+```
+python setup.py install
+```
 
 Run SnowStorm
 ```

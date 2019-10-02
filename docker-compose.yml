@@ -7,7 +7,7 @@ services:
         expose:
             - 8000
     nginx:
-        build: ./nginx
+        image: nginx:latest
         ports:
             - 80:80
         depends_on:

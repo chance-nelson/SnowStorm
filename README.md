@@ -1,6 +1,6 @@
 # SnowStorm
 
-SnowStorm is an audio streaming tool built to make running internet radio stations through [Icecast](https://icecast.org) easy.
+SnowStorm is an audio streaming tool built to make running internet radio stations easy
 
 ## Getting Started
 
@@ -8,7 +8,8 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-* [Icecast](https://icecast.org)
+* Python 3.6+
+* pip
 
 ### Installing
 
@@ -25,25 +26,14 @@ pip install -r requirements.txt
 
 Run SnowStorm
 ```
-snowstorm.py path/to/config.ini
+python run.py
 ```
 
 ## Deployment
 
 ### Configuration
 
-All needed credentials and audio information are stored in an ini file
-```
-[SERVER]
-host=localhost
-port=8000
-source_password=AGoodPassword
-mount=/stream
-admin_password=ABetterPassword
-
-[MUSIC]
-playlist=playlist.m3u
-```
+Configuration is performed through environment veriables, or easy containerization.
 
 It is recommended that SnowStorm is run under a systemd service/init script, with a dedicated user.
 
@@ -63,6 +53,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Acknowledgments
 
-* **Eduardo N** - shouty library - [edne](https://github.com/edne)
-* **Icecast Team** - Icecast
 * **Quod Libet Team** - mutagen - [quodlibet](https://github.com/quodlibet)

@@ -9,6 +9,4 @@ services:
     nginx:
         image: nginx:latest
         ports:
-            - 80:80
-        depends_on:
-            - radio
+            - 8000:8000

@@ -4,11 +4,5 @@ services:
     radio:
         build: .
         command: gunicorn api:create_app() --bind 0.0.0.0:8000
-        expose:
-            - 8000
-    nginx:
-        build: ./nginx
         ports:
-            - 80:80
-        depends_on:
-            - radio
+            - 8000:8000

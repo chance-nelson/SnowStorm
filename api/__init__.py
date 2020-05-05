@@ -1,3 +1,4 @@
+from multiprocessing import Value
 from os import chdir, environ
 
 from flask import Flask, Response, current_app, make_response
@@ -16,6 +17,5 @@ def create_app(*args):
     app.register_blueprint(STREAM)
 
     app.config['stream'] = StreamService(MUSIC_LIBRARY)
-    app.config.get('stream').start_stream()
 
     return app

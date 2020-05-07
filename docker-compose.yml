@@ -2,7 +2,13 @@ version: '3.7'
 
 services:
     radio:
-        build: .
-        command: gunicorn api:create_app() --bind 0.0.0.0:8000
-        ports:
-            - 8000:8000
+      build: .
+      command: uwsgi --http 0.0.0.0:8000 --module api:create_app()
+      ports:
+        - 8000:8000
+      environment:
+        - DB_HOST=db
+    db:
+      image: mongo:4.0
+      ports:
+        - 27017:27017

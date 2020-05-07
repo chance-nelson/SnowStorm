@@ -1,14 +1,17 @@
 import ctypes
 from multiprocessing import Queue, Array, Event, Process
+from random import randint
+from io import BytesIO
 from uuid import uuid4
-from random import choice
-import glob
 
+from mongoengine import connect
+
+from models.song import Song as SongDB
 from .song import Song
 
 
 class StreamService:
-    def __init__(self, music_library=None):
+    def __init__(self, **kwargs):
         self.current_frame = Array(ctypes.c_char, 8192, lock=False)
         self.current_frame_id = Array(ctypes.c_char, len(str(uuid4())),
                                       lock=False)
@@ -18,29 +21,40 @@ class StreamService:
         self.next_frame_ready = Event()
         self._p = None
 
-        self.song_pool = []
+        self._mongo_args = kwargs.get('mongo_args', {})
+
         self._clients = 0
 
         self.running = False
 
-        # Parse initial playlist
-        if music_library:
-            self.song_pool = glob.glob(music_library + '/*.mp3')
-
     @staticmethod
-    def _stream(song_queue, frame_buffer, next_frame_event, title, artist):
+    def _stream(song_queue, frame_buffer, next_frame_event, title, artist,
+                mongo_connect_args):
+        connect(**mongo_connect_args)
         while 1:
-            next_song = Song(song_queue.get(), frame_buffer, next_frame_event)
-            title.value = ''.join(next_song.title[:255]).encode()
-            artist.value = ''.join(next_song.artist[:255]).encode()
+            next_song_db = song_queue.get()
+            next_song_bytes = BytesIO(next_song_db.song.read())
+
+            next_song = Song(
+                next_song_bytes,
+                frame_buffer,
+                next_frame_event,
+                next_song_db.bitrate
+            )
+
+            title.value = ''.join(next_song_db.title[:255]).encode()
+            artist.value = ''.join(next_song_db.artist[:255]).encode()
+
             next_song.stream_mp3()
 
     @staticmethod
-    def _monitor_queue(song_queue, song_pool):
+    def _monitor_queue(song_queue, mongo_connect_args):
+        connect(**mongo_connect_args)
         while 1:
             # Add a random song if the queue is empty
             if song_queue.empty():
-                song_queue.put(choice(song_pool))
+                songs_count = len(SongDB.objects.all())
+                song_queue.put(SongDB.objects[randint(0, songs_count-1)])
 
     def skip(self):
         if self.running:
@@ -50,16 +64,15 @@ class StreamService:
     def start_stream(self):
         """Start streaming
         """
-        print("starting stream processes")
         self._p_2 = Process(target=self._monitor_queue,
-                            args=(self.song_queue, self.song_pool))
+                            args=(self.song_queue, self._mongo_args))
 
         self._p_2.start()
 
         self._p = Process(target=self._stream,
                           args=(self.song_queue, self.current_frame,
                                 self.current_frame_id, self.title,
-                                self.artist))
+                                self.artist, self._mongo_args))
         self._p.start()
 
         self.running = True
@@ -67,7 +80,6 @@ class StreamService:
     def stop_stream(self):
         """Stop streaming
         """
-        print("killing stream processes")
         if self._p:
             self._p.kill()
 
@@ -82,7 +94,6 @@ class StreamService:
     def listen(self):
         """Send a stream of live music packets
         """
-        print('connect!')
         if self._clients < 1:
             self.start_stream()
 

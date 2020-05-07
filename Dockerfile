@@ -1,12 +1,14 @@
-FROM python:3.7-alpine
+FROM python:3.8-alpine
 
-COPY ./ /
-
-RUN apk add mariadb-dev libcurl curl-dev gcc musl-dev
+RUN apk add libcurl curl-dev gcc musl-dev linux-headers
 
 ENV PYCURL_SSL_LIBRARY=openssl
+
+COPY ./requirements.txt /
 
 # upgrade pip and install required python packages
 RUN pip install --upgrade cython
 RUN pip install -r /requirements.txt
-RUN pip install gunicorn
+RUN pip install uwsgi
+
+COPY ./ /

@@ -1,3 +1,5 @@
+![alt text](https://github.com/srahnama/SnowStorm/blob/master/snowstorm.png?raw=true)
+
 # SnowStorm
 
 SnowStorm is an audio streaming tool built to make running internet radio stations easy

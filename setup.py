@@ -15,7 +15,7 @@ setup(
    install_requires=[
        'Click==7.0',
        'Flask==1.1.1',
-       'Flask-Cors==3.0.8',
+       'Flask-Cors==3.0.9',
        'itsdangerous==1.1.0',
        'Jinja2==2.10.1',
        'MarkupSafe==1.1.1',
